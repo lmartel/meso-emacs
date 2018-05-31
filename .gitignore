@@ -1,0 +1,11 @@
+# Ignore various cache files
+.persistent-scratch
+backups/
+elpa/
+projectile-bookmarks.eld
+recentf
+
+# Ignore swap and backup files. These *should* be neatly sorted into backups/
+# but we still need this for emacs -Q
+.#*
+*~
