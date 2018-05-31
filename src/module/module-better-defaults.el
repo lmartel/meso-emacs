@@ -37,7 +37,8 @@
 (load-library "iso-transl")
 
 ;; Put `customize' settings in their own file instead of at the bottom of init.el
-(setq custom-file (f-join user-emacs-directory "custom.el"))
+(setq custom-file (f-join user-emacs-directory "user" "custom.el"))
+(f-mkdir (f-dirname custom-file))
 (f-touch custom-file)
 
 ;; Be less annoying
