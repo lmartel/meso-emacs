@@ -9,3 +9,8 @@ recentf
 # but we still need this for emacs -Q
 .#*
 *~
+
+# Ignore custom file. It's machine-edited so resolving merge conflicts
+# is a nightmare. If you want to version control your custom file, consider
+# using a submodule.
+/user/custom.el
