@@ -49,7 +49,9 @@ to your meso/user-init function."
   (meso/load-module theme-samples)
   (meso/load-module windows)
 
-  (meso/load-module lang-emacs-lisp))
+  (meso/load-module lang-emacs-lisp)
+
+  (meso/load-module lang-python))
 
 
 (defun meso/user-config ()
