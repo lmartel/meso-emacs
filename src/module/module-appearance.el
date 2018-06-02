@@ -28,6 +28,8 @@
 (require 'meso)
 (require 'meso-utils)
 
+(meso--require-set user/appearance/font "Set default font name and size. Format eg: \"Font Name 11\". Explicitly set this to `nil' to use Emacs' default font.")
+
 ;; Font setup
 (defun meso--maybe-set-font (font)
   "Set font for all frames to FONT if it's available."
@@ -37,8 +39,8 @@
              t)
     (progn (message "Font %s not found; default font not changed." font)
            nil)))
-(if (boundp 'user/appearance/font)
-    (meso--maybe-set-font user/appearance/font))
+(when user/appearance/font
+  (meso--maybe-set-font user/appearance/font))
 
 
 ;; Themes setup. Use M-x customize-themes to choose a theme.
