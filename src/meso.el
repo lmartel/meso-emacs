@@ -141,7 +141,7 @@ package installations."
 (require 'meso-utils)
 
 (meso--set-if-unset meso/force-explicit-skip-module t
-  "If non-nil, unwanted meso modules must be explicitly skipped with meso/skip-module.")
+                    "If non-nil, unwanted meso modules must be explicitly skipped with meso/skip-module.")
 
 
 ;; This cannot be bound to a clojure with `let' because macros use the lexical scope of their

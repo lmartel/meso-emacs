@@ -47,16 +47,24 @@ themes to choose between in customize-theme without enabling all of them at once
                   (meso--package-download ,theme packaged-themes-dir))))
 
 
-(defmacro meso--require-set (var)
-  "Assert symbol VAR is defined, and crash with a clear error message if it isn't."
-  `(unless (boundp (quote ,var))
-     (error "Error loading file %s: module expected variable `%s' to be defined, but got void or nil"
-            ,(f-filename (f-this-file)) (quote ,var))))
+(defmacro meso--require-set (var &optional desc)
+  "Assert symbol VAR is defined. Set the docstring to DESC if it is, and warn with a clear error message if it isn't."
+  `(if (boundp (quote ,var))
+       (progn (when ,desc
+                (put (quote ,var) 'variable-documentation ,desc))
+              ,var)
+     (progn (warn "[Meso] Error loading file %s: module expected variable `%s' to be defined, but got void. Please set an explicit value in init.el (nil is fine). Docstring: %s"
+                  ,(f-filename (f-this-file)) (quote ,var) ,desc)
+            (defvar ,var nil ,desc)
+            nil)))
 
 (defmacro meso--set-if-unset (var value &optional desc)
-  "If VAR is not bound, set its value globally to VALUE."
-  `(unless (boundp (quote ,var))
-     (defvar ,var ,value ,desc)))
+  "If VAR is not bound, set its value globally to VALUE. Set the docstring to DESC either way."
+  `(progn (unless (boundp (quote ,var))
+            (defvar ,var ,value ,desc))
+          (when ,desc
+            (put (quote ,var) 'variable-documentation ,desc))
+          ,value))
 
 (defun meso--f-join-dir (&rest args)
   "Join ARGS to a single path with f-join, but ensure exactly one trailing slash at the end."
