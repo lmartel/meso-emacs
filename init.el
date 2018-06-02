@@ -13,12 +13,16 @@ This is a good place to change how that setup happens, \
 e.g. by changing file paths or variables that are read at load time. \
 When in doubt, add your code in meso/user-config, not here."
 
-  (setq debug-on-error t) ; Show a stack trace when an error is raised. This is built into Emacs.
+  ;; Show a stack trace when an error is raised. This is built into Emacs.
+  ;; I recommend to turn this on when developing modules or heavily editing configs,
+  ;; and off otherwise to improve usability. Most day-to-day errors aren't showstopping.
+  (setq debug-on-error t)
 
   ;; Settings with the user/ prefix are custom settings used by Meso and its modules.
   (setq user/full-name "Leo Martel")
   (setq user/email "leo@lpm.io")
   (setq user/appearance/font "Fira Code Retina 13")
+  (setq user/lang/javascript-assume-jsx t)
 
   ;; Your init code here!
   
@@ -51,6 +55,7 @@ to your meso/user-init function."
 
   (meso/load-module lang-emacs-lisp)
 
+  (meso/load-module lang-javascript)
   (meso/load-module lang-python))
 
 
