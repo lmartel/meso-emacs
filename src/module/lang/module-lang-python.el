@@ -24,6 +24,7 @@
 ;;; Code:
 (require 'meso)
 (require 'meso-utils)
+(meso/load-module ide)
 
 (use-package anaconda-mode
   :init

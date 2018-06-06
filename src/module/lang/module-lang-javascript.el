@@ -24,72 +24,112 @@
 ;;; Code:
 (require 'meso)
 (require 'meso-utils)
+(meso/load-module ide)
 
-(meso--set-if-unset user/lang/javascript-assume-jsx nil "Assume jsx is present in all javascript, even in files ending in .js rather than .jsx")
+;;; User-facing configuration variables and functions
 
+(meso--set-if-unset user/lang/javascript-assume-jsx nil "Assume jsx is present in all JavaScript, even in files ending in .js rather than .jsx")
+
+(defun meso/javascript-initialize-this-project ()
+  "Copy some good default config files to the git project root of the current buffer. Won't overwrite existing files.
+Creates: .eslintrc for `eslint' linting; .jsbeautifyrc for `web-beautify' reformatting; jsconfig.json for `tide' autocompletion."
+  (interactive)
+  (cl-loop for (filename . template) in '((".eslintrc" . "template.eslintrc")
+                                          (".jsbeautifyrc" . "template.jsbeautifyrc")
+                                          ("jsconfig.json" . "template.jsconfig.json"))
+           do (meso--try-copy-resource template filename))
+  (tide-setup))
+
+;;; Packages, dependencies and npm
+
+(use-package nvm
+  :ensure-system-package node)
+
+(defun meso/npm-ensure-g (package)
+  "Ensure PACKAGE is installed using npm. Useful for packages that don't provide binaries."
+  (when (s-blank? (meso/shell (format "npm ls -g | grep ' %s@'" package)))
+    (async-shell-command (format "npm i -g %s" package))))
+
+;;; General editing: major and minor modes
+
+(define-minor-mode meso/js-minor-mode
+  "Toggle js-minor-mode. The Meso JavaScript module uses different major modes for different kinds of 
+files (e.g. embedded JSX vs not); they all hook into this minor mode. Add hooks and keymaps here to add them to
+all JS editing modes.")
 
 (use-package js2-mode
-  :ensure-system-package node
+  :after nvm
   :interpreter "node"
   :commands js2-mode
   :mode (("\\.js\\'" . js2-mode)
          ("\\.ejs\\'" . js2-mode))
-  :config
-  nil ;; TODO - explore best js2-mode settings around indentation, strictness etc
-  )
+  :init
+  (add-hook 'meso/js-minor-mode-hook #'meso/js-minor-mode))
 
-(defun meso/force-js2-mode () 
-  "Force enable js2-mode, even if web mode is set to override it."
-  (interactive)
-  (remove-hook 'js2-mode-hook #'web-mode)
-  (js2-mode)
+(use-package rjsx-mode
+  :commands rjsx-mode
+  :init
+  (add-hook 'meso/js-minor-mode-hook #'meso/js-minor-mode)
   (when user/lang/javascript-assume-jsx
-    (add-hook 'js2-mode-hook #'web-mode)))
+    (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))))
 
+(use-package json-mode) ; Intentionally don't load js-minor-mode hooks here.
+
+;;; Linting, syntax checking, and gradual typechecking
+
+(use-package flycheck
+  :after nvm
+  :ensure-system-package (eslint . "npm i -g eslint")
+  :init
+  ;; Disable jshint, prefer eslint.
+  (add-to-list 'flycheck-disabled-checkers 'javascript-jshint)
+  (flycheck-add-mode 'javascript-eslint 'meso/js-minor-mode)
+  :config
+  (meso/npm-ensure-g "babel-eslint")
+  (meso/npm-ensure-g "eslint-plugin-react"))
+
+(use-package flow-minor-mode
+  :after (js2-mode rjsx-mode)
+  :commands (flow-minor-enable-automatically)
+  :hook ((js2-mode . flow-minor-mode)
+         (rjsx-mode . flow-minor-mode)))
+
+(use-package flycheck-flow
+  :after (flycheck flow-minor-mode)
+  :init
+  (meso--hook-localize-list 'flow-minor-mode-hook 'company-backends 'javascript-flow)
+  :config
+  (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
+
+(use-package company-flow
+  :after (company flow-minor-mode)
+  :init
+  (add-to-list 'company-backends 'company-flow))
+
+(use-package tide
+  :after (company flycheck js2-mode rjsx-mode)
+  :hook ((js2-mode . tide-setup)
+         (rjsx-mode . tide-setup)))
+
+;;; Refactoring and reformatting
 
 (use-package js2-refactor
-  :after js2-mode
+  :after js2-mode rjsx-mode
+  :hook ((js2-mode . js2-refactor-mode)
+         (rjsx-mode . js2-refactor-mode))
   :init
   (add-hook 'js2-mode-hook #'js2-refactor-mode)
+  (add-hook '-mode-hook #'js2-refactor-mode)
   :config
   (js2r-add-keybindings-with-prefix "C-c C-m"))
 
-
-(use-package web-mode
-  :commands web-mode
+(use-package web-beautify
+  :after nvm
+  :ensure-system-package (js-beautify . "npm i -g js-beautify")
+  :commands web-beautify-js
   :init
-  (when user/lang/javascript-assume-jsx
-    (add-hook 'js2-mode-hook #'web-mode)) 
-  :config 
-  (when user/lang/javascript-assume-jsx
-    (add-to-list 'web-mode-content-types-alist '("jsx" . "\\.[jt]sx?\\'")))
-  (with-eval-after-load "dtrt-indent"
-    (add-hook 'dtrt-indent-mode-hook #'meso--web-mode-set-all-indents)))
-
-;; Detect and avoid infinite recursion via web-mode hooks.
-(let ((indents-already-set nil))
-  (defun meso--web-mode-set-all-indents (&optional value)
-    "Set all web-mode indent offsets (HTML, CSS, code) to VALUE, or detect from buffer settings if VALUE is nil."
-    (if indents-already-set
-        (setq indents-already-set nil)
-      (let ((v (or value standard-indent)))
-        (setq-default web-mode-markup-indent-offset v)
-        (setq-default web-mode-css-indent-offset v)
-        (setq-default web-mode-code-indent-offset v))
-      (when (eq major-mode 'web-mode)
-        (setq indents-already-set t)
-        (web-mode))
-      value)))
-
-
-(use-package company-flow
-  :after (js2-mode web-mode company)
-  :ensure-system-package flow
-  :init
-  (meso--hook-localize-list 'js2-mode-hook 'company-backends 'company-flow)
-  (meso--hook-localize-list 'web-mode-hook 'company-backends 'company-flow))
-
-(use-package json-mode)
+  (with-eval-after-load 'meso/js-minor-mode
+    (define-key meso/js-minor-mode-map (kbd "C-c C-b") 'web-beautify-js)))
 
 (provide 'module-lang-javascript)
 ;;; module-lang-javascript.el ends here
