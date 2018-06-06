@@ -34,7 +34,7 @@
 
 (use-package restart-emacs
   :config
-  (global-set-key (kbd "C-c C-r") #'restart-emacs))
+  (global-set-key (kbd "C-c <delete>") #'restart-emacs))
 
 (provide 'module-persistence)
 ;;; module-persistence.el ends here
