@@ -131,5 +131,14 @@ You must specify a non-default directory, because `package-initialize' will auto
               (add-to-list (make-local-variable ,list-name) ,value))
             (add-hook ,hook-name (quote ,hook-fn)))))
 
+
+(defun meso--try-copy-resource (from-name to-name &optional to-dir)
+  "Try to copy file FROM-NAME from module/resource/ to TO-NAME in TO-DIR (default: project root) if file TO-NAME doesn't already exist there."
+  (when-let ((from-file (f-join user-emacs-directory "src" "module" "resource" from-name))
+             (-to-dir (or to-dir (vc-root-dir))) ; fail silently if `to-dir' is nil and `vc-root-dir' can't find a project root
+             (to-file (f-join -to-dir to-name)))
+    (unless (f-exists? to-file)
+      (f-copy from-file to-file))))
+
 (provide 'meso-utils)
 ;;; meso-utils.el ends here
