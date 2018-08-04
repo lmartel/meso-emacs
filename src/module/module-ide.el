@@ -35,7 +35,11 @@
   (setq company-tooltip-idle-delay 0.2) ; delay in seconds, default 0.5
   :config
   (global-company-mode)
-  (setq company-transformers '(company-sort-by-occurrence))
+  ;; This seemed like a good idea, but it overrides type-compatibility in
+  ;; typechecked backends. EG: Math.Math as the top suggestion instead of
+  ;; Math.abs because you've just typed "Math".
+  ;; (setq company-transformers '(company-sort-by-occurrence))
+  ;; TODO: explore company-sort-by-backend-importance
   :diminish company-mode)
 
 (use-package company-quickhelp
