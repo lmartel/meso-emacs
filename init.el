@@ -39,6 +39,7 @@ to your meso/user-init function."
   (meso/load-module backups)
   (meso/load-module better-defaults)
   (meso/load-module code)
+  (meso/load-module emacs-development)
   (meso/load-module gui)
   (meso/load-module helm)
   (meso/load-module help)
@@ -66,9 +67,8 @@ variable defaults, adding new keybinds or hooks, etc. \
 When in doubt, add your code here."
 
   ;; Your config code here!
-  
-  
-  )
+  (when (require 'asana nil :noerror)
+    (global-asana-mode 1)))
 
 (defun meso/init ()
   "Run user and framework init code. You shouldn't need to modify this function."
@@ -77,6 +77,8 @@ When in doubt, add your code here."
   (add-to-list 'load-path (concat user-emacs-directory "src/"))
   (require 'meso)
   (meso/user-modules)
+  (when meso/user-src-dir
+    (meso/add-to-load-path-with-subdirs meso/user-src-dir :try-mkdir))
   (meso/user-config)
   (when custom-file
     (load custom-file)))

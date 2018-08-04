@@ -33,12 +33,18 @@
   (error "Emacs version (%s) too old for Meso compatibility, stopping" emacs-version))
 
 ;; Add ~/.emacs.d/src/ and *all recursive descendants* to load-path.
-(dolist (srcs-dir-name (list "src/"
-			     ;; add more source directories here if needed!
-			     ))
-  (let ((default-directory (concat user-emacs-directory srcs-dir-name)))
+;; We also add ~/.emacs.d/user/src/ below.
+;; Call this function to add more source directories!
+(defun meso/add-to-load-path-with-subdirs (relative-dir-name &optional try-mkdir)
+  "Add RELATIVE-DIR-NAME (relative to `user-emacs-directory') to the Emacs load \
+ path along with all its subdirectories recursively."
+  (let ((default-directory (concat user-emacs-directory relative-dir-name)))
+    (when (and try-mkdir (boundp 'f-mkdir))
+      (f-mkdir default-directory))
     (add-to-list 'load-path default-directory)
     (normal-top-level-add-subdirs-to-load-path)))
+(meso/add-to-load-path-with-subdirs "src/")
+
 
 ;; Initialize the package system, and add useful package repositories.
 (require 'package)  
@@ -135,11 +141,15 @@ package installations."
                     (add-to-list 'package-safe-delete-required-packages package-name)))
                 (apply old-function (cons package-name options)))))
 
+;; After bootstrapping use-package, we can load the framework utils to finish setting up.
+(require 'meso-utils)
+
+(meso--set-if-unset meso/user-src-dir "user/src/"
+                    "User sources directory path, intended to be gitignored. \
+This and its subdirectories will be added to the load-path if non-nil.")
 
 ;; Finally, set up the Meso module system. By default, you must load or explicitly skip all modules,
 ;; to ensure that you know what's available and that modules don't go missing and cause confusion.
-(require 'meso-utils)
-
 (meso--set-if-unset meso/force-explicit-skip-module t
                     "If non-nil, unwanted meso modules must be explicitly skipped with meso/skip-module.")
 

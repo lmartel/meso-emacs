@@ -1,4 +1,4 @@
-;;; module-windows.el --- Manipulating windows and frames.   -*- lexical-binding: t -*-
+;;; module-emacs-development.el --- Emacs packages for developing Emacs packages.   -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2018 Leo Martel
 
@@ -19,19 +19,22 @@
 
 ;;; Commentary:
 
-;; In Emacs-land, "frames" are OS-level windows (or terminal windows/tabs)
-;; and "windows" are the panes within each frame.
-;; None of this code has anything to do with Microsoft Windows;
-;; use Linux Subsystem for Windows if you want to use Meso Emacs on Windows.
+;; General tools for editing Emacs Lisp can be found in the lang-emacs-lisp module.
+;; This module is for preparing your code to be published as a package after you write it.
 
 ;;; Code:
+(require 'meso)
+(require 'meso-utils)
 
-(use-package popwin :demand t
-  :bind-keymap (("C-z" . popwin:keymap))
-  :config
-  (popwin-mode 1)
-  (add-to-list 'popwin:special-display-config 'debugger-mode))
+(use-package package-lint
+  :commands (package-lint-buffer package-lint-current-buffer))
 
+(use-package flycheck-package
+  :after flycheck
+  :commands flycheck-package-setup
+  :init
+  (with-eval-after-load 'flycheck
+    (flycheck-package-setup)))
 
-(provide 'module-windows)
-;;; module-windows.el ends here
+(provide 'module-emacs-development)
+;;; module-emacs-development.el ends here

@@ -31,16 +31,17 @@
   ;; Ignore packages that request "org" as a dependency, because
   ;; we want to install only 'org-plus-contrib, not 'org as well.
   (meso/package-dependency-check-ignore 'org)
+  (setq-default org-directory (f-join user-emacs-directory "org"))
 
   :config
 
   ;; let OSX keep the s-* keybinds
   (setq org-replace-disputed-keys t)
   (setq org-startup-indented t)
-  (setq org-startup-folded nil))
+  (setq org-startup-folded nil)
 
-(with-eval-after-load "org-indent"
-  (diminish 'org-indent-mode))
+  (with-eval-after-load "diminish"
+    (diminish 'org-indent-mode)))
 
 ;; I don't like gnuplot. TODO: use python for inline plotting, instead. From: http://ehneilsen.net/notebook/orgExamples/org-examples.html
 ;; (use-package gnuplot)
@@ -65,7 +66,7 @@ not Emacs' built-in outdated org version."
   (use-package org-brain)
   (use-package org-journal
     :init
-    (setq org-journal-dir (concat org-directory "/journal"))))
+    (setq org-journal-dir (f-join org-directory "journal"))))
 
 (with-eval-after-load "org"
   (if (fboundp 'org-link-types)
