@@ -46,6 +46,8 @@
 (setq custom-buffer-done-kill t)
 (setq async-shell-command-buffer 'new-buffer) ; Don't ask y/n to run multiple async commands
 
+;; Goodness gracious
+(setq sentence-end-double-space nil)
 
 ;; Simplify the start screen, and don't assume scratch buffer is elisp
 (setq initial-major-mode 'text-mode)
