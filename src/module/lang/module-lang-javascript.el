@@ -58,7 +58,7 @@ files (e.g. embedded JSX vs not); they all hook into this minor mode. Add hooks 
 all JS editing modes.")
 
 (use-package js2-mode
-  :after nvm
+  :ensure-system-package node
   :interpreter "node"
   :commands js2-mode
   :mode (("\\.js\\'" . js2-mode)
@@ -78,8 +78,7 @@ all JS editing modes.")
 ;;; Linting, syntax checking, and gradual typechecking
 
 (use-package flycheck
-  :after nvm
-  :ensure-system-package (eslint . "npm i -g eslint")
+  :ensure-system-package (node (eslint . "npm i -g eslint"))
   :init
   ;; Disable jshint, prefer eslint.
   (add-to-list 'flycheck-disabled-checkers 'javascript-jshint)
@@ -89,6 +88,7 @@ all JS editing modes.")
   (meso/npm-ensure-g "eslint-plugin-react"))
 
 (use-package flow-minor-mode
+  :ensure-system-package ((flow . "npm i -g flow-bin"))
   :after (js2-mode rjsx-mode)
   :commands (flow-minor-enable-automatically)
   :hook ((js2-mode . flow-minor-mode)
@@ -96,8 +96,6 @@ all JS editing modes.")
 
 (use-package flycheck-flow
   :after (flycheck flow-minor-mode)
-  :init
-  (meso--hook-localize-list 'flow-minor-mode-hook 'company-backends 'javascript-flow)
   :config
   (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
 
@@ -124,8 +122,7 @@ all JS editing modes.")
   (js2r-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package web-beautify
-  :after nvm
-  :ensure-system-package (js-beautify . "npm i -g js-beautify")
+  :ensure-system-package (node (js-beautify . "npm i -g js-beautify"))
   :commands web-beautify-js
   :init
   (with-eval-after-load 'meso/js-minor-mode
