@@ -34,6 +34,7 @@
 (meso--set-if-unset user/backups-directory (meso--f-join-dir user-emacs-directory "backups") "Path to directory to store auto-save and backup files")
 
 ;; Create nested backup directories if they do not exist.
+(f-mkdir user/backups-directory)
 (--each '("auto-save"
           "auto-save-list"
           "on-session-first-save"
