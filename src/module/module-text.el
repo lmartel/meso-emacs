@@ -34,6 +34,8 @@
   (add-hook 'visual-line-mode-hook #'turn-on-visual-fill-column-mode)
   (add-hook 'visual-fill-column-mode-hook #'ruler-mode))
 
+(system-packages-ensure "aspell")
+(setq ispell-program-name "aspell")
 (add-hook 'text-mode-hook #'turn-on-flyspell)
 
 (provide 'module-text)
