@@ -28,8 +28,11 @@ When in doubt, add your code in meso/user-config, not here."
   (setq user/init/use-cmd-as-meta t)
 
   ;; Your init code here!
-  
-  
+  (defvar devbox-machine nil)
+  (defvar stripe-username "leo")
+  (let ((stripemacs "~/stripe/stripemacs/stripemacs.el"))
+    (when (file-exists-p stripemacs)
+      (load stripemacs)))
   )
 
 (defun meso/user-modules ()
@@ -65,7 +68,7 @@ to your meso/user-init function."
   ;; Language-specific modules. Enable as needed.
   (meso/skip-module lang-javascript)
   (meso/skip-module lang-python)
-  (meso/skip-module lang-scala))
+  (meso/load-module lang-scala))
 
 
 (defun meso/user-config ()
