@@ -21,7 +21,7 @@ When in doubt, add your code in meso/user-config, not here."
   ;; Settings with the user/ prefix are custom settings used by Meso and its modules.
   (setq user/full-name "Leo Martel")
   (setq user/email "leo@lpm.io")
-  (setq user/appearance/font "Fira Code Retina 13")
+  (setq user/appearance/font "Fira Code Retina 12")
   (setq user/lang/javascript-assume-jsx t)
 
   ;; Your init code here!

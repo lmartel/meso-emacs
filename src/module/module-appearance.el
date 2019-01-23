@@ -33,7 +33,8 @@
 ;; Font setup
 (defun meso--maybe-set-font (font)
   "Set font for all frames to FONT if it's available."
-  (if (member font (font-family-list))
+  (if (or (member font (font-family-list))
+          (and (window-system) (x-list-fonts font)))
       (progn (set-frame-font font nil t)
              (message "Successfully set default font to %s" font)
              t)
