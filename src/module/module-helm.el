@@ -74,6 +74,7 @@
 
 
 (use-package helm-ag
+  :ensure-system-package ag
   :bind (("C-c C-g" . helm-do-ag)))
 
 (with-eval-after-load "module-projects"
