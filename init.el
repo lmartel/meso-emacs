@@ -57,7 +57,8 @@ to your meso/user-init function."
   (meso/load-module lang-emacs-lisp)
 
   (meso/load-module lang-javascript)
-  (meso/load-module lang-python))
+  (meso/load-module lang-python)
+  (meso/load-module lang-scala))
 
 
 (defun meso/user-config ()
