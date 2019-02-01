@@ -28,8 +28,8 @@
 ;; Line the modifiers up reasonably
 (when (symbolp 'mac-control-modifier)
   (setq mac-control-modifier 'control)
-  (setq mac-command-modifier 'meta)
-  (setq mac-option-modifier 'super))
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super))
 
 ;; Set all the usual keybinds
 (global-set-key (kbd "s-a") #'mark-whole-buffer)
