@@ -19,10 +19,13 @@ When in doubt, add your code in meso/user-config, not here."
   (setq debug-on-error t)
 
   ;; Settings with the user/ prefix are custom settings used by Meso and its modules.
+  ;; TODO fixup these with init/config secondary prefix to clarify when they're read
   (setq user/full-name "Leo Martel")
   (setq user/email "leo@lpm.io")
   (setq user/appearance/font "Fira Code Retina 12")
   (setq user/lang/javascript-assume-jsx t)
+
+  (setq user/init/use-cmd-as-meta t)
 
   ;; Your init code here!
   
