@@ -43,6 +43,7 @@ to your meso/user-init function."
   (meso/load-module better-defaults)
   (meso/load-module code)
   (meso/load-module emacs-development)
+  (meso/load-module git)
   (meso/load-module gui)
   (meso/load-module helm)
   (meso/load-module help)
