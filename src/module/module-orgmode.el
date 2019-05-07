@@ -31,14 +31,22 @@
   ;; Ignore packages that request "org" as a dependency, because
   ;; we want to install only 'org-plus-contrib, not 'org as well.
   (meso/package-dependency-check-ignore 'org)
-  (setq-default org-directory (f-join user-emacs-directory "org"))
+  (setq org-directory (f-join "~" "org"))
 
   :config
 
   ;; let OSX keep the s-* keybinds
   (setq org-replace-disputed-keys t)
+
+  ;; startup expanded
   (setq org-startup-indented t)
   (setq org-startup-folded nil)
+
+  ;; better refile
+  (setq org-refile-targets '((nil :maxlevel . 9)
+                             (org-agenda-files :maxlevel . 9)))
+  (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
+  (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 
   (with-eval-after-load "diminish"
     (diminish 'org-indent-mode)))
