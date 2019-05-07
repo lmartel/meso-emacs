@@ -39,7 +39,7 @@
   "Add RELATIVE-DIR-NAME (relative to `user-emacs-directory') to the Emacs load \
  path along with all its subdirectories recursively."
   (let ((default-directory (concat user-emacs-directory relative-dir-name)))
-    (when (and try-mkdir (boundp 'f-mkdir))
+    (when try-mkdir
       (f-mkdir default-directory))
     (add-to-list 'load-path default-directory)
     (normal-top-level-add-subdirs-to-load-path)))
@@ -47,7 +47,7 @@
 
 
 ;; Initialize the package system, and add useful package repositories.
-(require 'package)  
+(require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
@@ -125,12 +125,12 @@ package installations."
 ;; This way you can manually install packages for testing and just restart to clean up.
 ;; If you like the package, add it to your init file or to a module.
 (use-package package-safe-delete
-  :demand t 
+  :demand t
   :config
   (mapcar (lambda (package-name) (add-to-list 'package-safe-delete-required-packages package-name))
           '(paradox use-package package-safe-delete))
-  (advice-add #'use-package 
-              :around 
+  (advice-add #'use-package
+              :around
               (lambda (old-function package-name &rest options)
                 "Add packages to the package-safe-delete required packages list when loaded with use-package"
                 (let ((ensured (plist-get options ':ensure)))

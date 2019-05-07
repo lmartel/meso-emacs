@@ -19,10 +19,13 @@ When in doubt, add your code in meso/user-config, not here."
   (setq debug-on-error t)
 
   ;; Settings with the user/ prefix are custom settings used by Meso and its modules.
+  ;; TODO fixup these with init/config secondary prefix to clarify when they're read
   (setq user/full-name "Leo Martel")
   (setq user/email "leo@lpm.io")
-  (setq user/appearance/font "Fira Code Retina 13")
+  (setq user/appearance/font "Fira Code Retina 12")
   (setq user/lang/javascript-assume-jsx t)
+
+  (setq user/init/use-cmd-as-meta t)
 
   ;; Your init code here!
 
@@ -39,12 +42,11 @@ to your meso/user-init function."
   (meso/load-module backups)
   (meso/load-module better-defaults)
   (meso/load-module code)
-  (meso/load-module emacs-development)
+  (meso/load-module git)
   (meso/load-module gui)
   (meso/load-module helm)
   (meso/load-module help)
   (meso/load-module ide)
-  (meso/load-module lisp)
   (meso/load-module mac)
   (meso/load-module orgmode)
   (meso/load-module pandoc)
@@ -54,10 +56,16 @@ to your meso/user-init function."
   (meso/load-module theme-samples)
   (meso/load-module windows)
 
+  ;; Most people will edit their configs and therefore need emacs lisp
+  ;; support, but not necessarily author and publish packages.
+  (meso/load-module lisp)
   (meso/load-module lang-emacs-lisp)
+  (meso/skip-module emacs-development)
 
-  (meso/load-module lang-javascript)
-  (meso/load-module lang-python))
+  ;; Language-specific modules. Enable as needed.
+  (meso/skip-module lang-javascript)
+  (meso/skip-module lang-python)
+  (meso/skip-module lang-scala))
 
 
 (defun meso/user-config ()
