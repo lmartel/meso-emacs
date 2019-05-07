@@ -28,8 +28,8 @@ When in doubt, add your code in meso/user-config, not here."
   (setq user/init/use-cmd-as-meta t)
 
   ;; Your init code here!
-  
-  
+
+
   )
 
 (defun meso/user-modules ()
@@ -75,8 +75,23 @@ variable defaults, adding new keybinds or hooks, etc. \
 When in doubt, add your code here."
 
   ;; Your config code here!
+  (setq asana-keymap-prefix "C-c C-a")
   (when (require 'asana nil :noerror)
-    (global-asana-mode 1)))
+    (global-asana-mode 1))
+
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (global-set-key (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates
+        '(("t" "Task" entry (file+headline "" "Tasks")
+	   "* TODO %?\n  %u")
+          ("l" "Linked Task" entry (file+headline "" "Tasks")
+	   "* TODO %?\n  %u\n  %a") ; default ["t" "Task"]
+          ))
+  (setq org-default-notes-file (f-join org-directory "notes.org"))
+  (setq org-agenda-files (list (f-join org-directory "todo.org")
+                               (f-join org-directory "notes.org")))
+  )
 
 (defun meso/init ()
   "Run user and framework init code. You shouldn't need to modify this function."

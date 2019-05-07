@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: Gemfile
+# key: Gemfile
+# --
+source 'https://rubygems.org'
+ruby '${1:`(s-chop-prefix "ruby-" (rvm--ruby-default))`}'
+
+## begin project dependencies
+$0
+## end project dependencies
+
+## begin devtools
+# https://github.com/dgutov/robe
+gem 'pry'
+gem 'pry-doc', '>=0.6.0'
+gem 'method_source', '>=0.8.2'
+gem 'rubocop', '>=0.9.0'
+## end devtools

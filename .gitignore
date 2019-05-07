@@ -2,8 +2,10 @@
 .persistent-scratch
 backups/
 elpa/
+eshell/
 projectile-bookmarks.eld
 recentf
+url/
 
 # Ignore swap and backup files. These *should* be neatly sorted into backups/
 # but we still need this for emacs -Q
