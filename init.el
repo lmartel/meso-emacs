@@ -30,6 +30,8 @@ When in doubt, add your code in meso/user-config, not here."
   ;; Your init code here!
 
 
+  ;; Load optional private-init module if it exists
+  (require 'private-init nil :noerror)
   )
 
 (defun meso/user-modules ()
@@ -62,10 +64,10 @@ to your meso/user-init function."
   (meso/load-module lang-emacs-lisp)
   (meso/skip-module emacs-development)
 
-  ;; Language-specific modules. Enable as needed.
+  ;; Language-specific modules. Enable/disable as needed. These can be bulky.
   (meso/skip-module lang-javascript)
-  (meso/skip-module lang-python)
-  (meso/skip-module lang-scala))
+  (meso/load-module lang-python)
+  (meso/load-module lang-scala))
 
 
 (defun meso/user-config ()
@@ -91,6 +93,10 @@ When in doubt, add your code here."
   (setq org-default-notes-file (f-join org-directory "notes.org"))
   (setq org-agenda-files (list (f-join org-directory "todo.org")
                                (f-join org-directory "notes.org")))
+
+
+  ;; Load optional private-config module if it exists
+  (require 'private-config nil :noerror)
   )
 
 (defun meso/init ()
