@@ -35,6 +35,9 @@
 
   :config
 
+  ;; tab-completion for org structures. like `<s [tab]' for src
+  (require 'org-tempo) 
+
   ;; let OSX keep the s-* keybinds
   (setq org-replace-disputed-keys t)
 
