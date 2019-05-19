@@ -46,8 +46,8 @@
   (setq org-startup-folded nil)
 
   ;; better refile
-  (setq org-refile-targets '((nil :maxlevel . 9)
-                             (org-agenda-files :maxlevel . 9)))
+  (setq org-refile-targets '((nil :maxlevel . 3)
+                             (org-agenda-files :level . 1)))
   (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
   (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
 
@@ -74,10 +74,11 @@ not Emacs' built-in outdated org version."
     (define-key org-mode-map (kbd "C-c C-y") 'org-cliplink))
 
   ;; Additional packages to facilitate using org-mode as a journaling system, a personal wiki, a concept-mapping system, etc.
-  (use-package org-brain)
+  ;;(use-package org-brain)
   (use-package org-journal
     :init
-    (setq org-journal-dir (f-join org-directory "journal"))))
+    (setq org-journal-dir (f-join org-directory "journal"))
+    (setq org-journal-file-type 'yearly)))
 
 (with-eval-after-load "org"
   (if (fboundp 'org-link-types)

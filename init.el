@@ -28,6 +28,7 @@ When in doubt, add your code in meso/user-config, not here."
   (setq user/init/use-cmd-as-meta t)
 
   ;; Your init code here!
+  
 
 
   ;; Load optional private-init module if it exists
@@ -84,15 +85,41 @@ When in doubt, add your code here."
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c a") 'org-agenda)
   (global-set-key (kbd "C-c c") 'org-capture)
+
+  (defun org-f (filename &optional touch)
+    (let ((path (f-join org-directory filename)))
+      (when touch
+        (f-touch path))
+      path))
+  (setq org-gtd-inbox (org-f "inbox.org" t))
+  (setq org-gtd-tasks (org-f "todo.org" t))
+  (setq org-gtd-references (org-f "notes.org" t))
+  (setq org-gtd-someday (org-f "someday.org" t))
+  
+  
+  (setq org-default-notes-file org-gtd-inbox)
+  (setq org-agenda-files (append (list org-gtd-inbox
+                                       org-gtd-tasks)
+                                 (f-glob (org-f "projects/*.org")))) ;; TODO deprecate file-per-project projects, refile
+  (setq org-agenda-todo-ignore-scheduled 'future)
+  (setq org-refile-targets '((,org-gtd-tasks :maxlevel . 3)
+                             (,org-gtd-references :level . 1)
+                             (,org-gtd-someday :level . 1)))
   (setq org-capture-templates
         '(("t" "Task" entry (file+headline "" "Tasks")
 	   "* TODO %?\n  %u")
           ("l" "Linked Task" entry (file+headline "" "Tasks")
 	   "* TODO %?\n  %u\n  %a") ; default ["t" "Task"]
+          ("n" "Note" entry (file+headline org-gtd-references "Notes")
+	   "* %?\n  %u")
+          ("p" "Project" entry (file+headline org-gtd-tasks "Projects")
+           "* %^{NAME}%?\n  :PROPERTIES:\n  :CATEGORY: %\\1\n  :END:\n  %u")
           ))
-  (setq org-default-notes-file (f-join org-directory "notes.org"))
-  (setq org-agenda-files (list (f-join org-directory "todo.org")
-                               (f-join org-directory "notes.org")))
+
+  (setq org-todo-keywords
+        '((sequence "TODO" "DONE"))) ;; TODO incorporate wait(w@) w/ multiple sequences
+
+  (setq org-deadline-warning-days 5)
 
 
   ;; Load optional private-config module if it exists
